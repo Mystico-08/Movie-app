@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Catalogue</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+
+<header>
+  <h1>Movie Catalogue</h1>
+</header>
+
+<div class="search-container">
+  <input id="searchInput" type="text" placeholder="Search movies...">
+  <div id="searchDropdown" class="dropdown hidden"></div>
+</div>
+
+<section>
+<h2>Popular Movies</h2>
+<div id="popular" class="movie-row"></div>
+</section>
+
+<section>
+<h2>Top Rated Movies</h2>
+<div id="topRated" class="movie-row"></div>
+</section>
+
+<section>
+<h2>Latest Movies</h2>
+<div id="latest" class="movie-row"></div>
+</section>
+<section>
+<h2>My Watchlist</h2>
+<div id="watchlist" class="movie-row"></div>
+</section>
+
+<section>
+<h2>My Favorites</h2>
+<div id="favorites" class="movie-row"></div>
+</section>
+
+<div id="modal" class="modal hidden"></div>
+
+<div class="TMDB"><img src="./assets/tmdb logo.svg"></div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
