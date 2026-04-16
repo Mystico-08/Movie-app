@@ -1,64 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAL</title>
-    <link href="style.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Movie Catalogue</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body>
-    <nav class="nav">
-        <div class="logo">Cal.com</div>
-        <div>Solutions</div>           
-        <div> Enterprise</div>
-        <div>Cal.ai</div>
-        <div>Developer</div>
-        <div>Resources</div>
-        <div>Pricing</div>
-        
-        <div><div>Sign In</div><div class="button">Get Started</div></div>
-    </nav>
-    <section class="section-1">
-        <div class="sec-1-container">
-            <div class="sec-1-button">Cal.com launche v6.4 ></div>
-            <div>The better way to<br> schedule your<br> meetings</div>
-        <div>A fully customizable scheduling software for individuals,<br> businesses taking calls and developers building scheduling<br> platforms where users meet users.</div>
-       <div>Sing up with google</div>
-       <div>Sign up with Email</div>
-       </div>
-       <div class="sec-1-img">
-        <div><img src="./assets/Section1.png"></div>
-       <div class="sec-1-img-flex"><div><img src="./assets/Section1.1.svg" height="100px" width="100px"></div>
-       <div><img src="./assets/Section1.2.svg" height="100px" width="100px"></div></div>
-       </div>
-    </section>
 
-    <section class="section-2">
-        <div> How it works</div>
-        <div>With us, appointment scheduling is easy</div>
-        <div>Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies.</div>
-        <div><div>Get Started</div><div>Book a demo</div></div>
-        
-        <div class="card-container">
-            <div class="card-1">
-                <div>01</div>
-                <div>Connect your calendar</div>
-                <div>We'll handle all the cross-referencing, so you don't have to worry about double bookings.</div>
-                <img src="./assets/Sec-2.1.png">
-            </div>
-             <div class="card-2">
-                <div>02</div>
-                <div>Set your availability</div>
-                <div>Want to block off weekends? Set up any buffers? We make that easy.</div>
-                <img src="./assets/Sec-2.1.png">
-            </div>
-             <div class="card-1">
-                <div>01</div>
-                <div>Connect your calendar</div>
-                <div>We'll handle all the cross-referencing, so you don't have to worry about double bookings.</div>
-                <img src="./assets/Sec-2.2.png">
-            </div>
-        </div>
-    </section>
+<body>
+
+<header>
+  <h1>Movie Catalogue</h1>
+</header>
+
+<div class="search-container">
+  <input id="searchInput" type="text" placeholder="Search movies...">
+  <div id="searchDropdown" class="dropdown hidden"></div>
+</div>
+
+<h2>Popular Movies</h2>
+<div id="popular" class="movie-row"></div>
+</section>
+
+<section>
+<h2>Top Rated Movies</h2>
+<div id="topRated" class="movie-row"></div>
+</section>
+
+<section>
+<h2>Latest Movies</h2>
+<div id="latest" class="movie-row"></div>
+</section>
+<section>
+<h2>My Watchlist</h2>
+<div id="watchlist" class="movie-row"></div>
+</section>
+
+<section>
+<h2>My Favorites</h2>
+<div id="favorites" class="movie-row"></div>
+</section>
+
+<div id="modal" class="modal hidden"></div>
+
+<div class="TMDB"><img src="./assets/tmdb logo.svg"></div>
+
+<script src="script.js" defer></script>
 </body>
 </html>
