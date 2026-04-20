@@ -15,7 +15,7 @@ function createCard(movie) {
 
   var imgSrc = movie.poster_path ? "https://image.tmdb.org/t/p/w500" + movie.poster_path : "";
 
-  card.innerHTML = "<img src='" + imgSrc + "'><h4>" + movie.title + "</h4><p>⭐ " + movie.vote_average + "</p>";
+  card.innerHTML = "<img src='" + imgSrc + "'><h4>" + movie.title + "</h4><p>⭐ " + movie.vote_average.toFixed(1) + "</p>";
 
   card.addEventListener("click", function() {
     openModal(movie.id);
@@ -76,6 +76,16 @@ async function renderWatchlist() {
     var movie = await res.json();
     var card = createCard(movie);
 
+
+    var ratings = JSON.parse(localStorage.getItem("ratings") || "{}");
+    var userRating = ratings[id];
+    if (userRating) {
+      var ratingP = card.querySelector("p");
+      if (ratingP) {
+        ratingP.outerHTML = "<div class='rating-row'><span>⭐ " + movie.vote_average.toFixed(1) + "</span><span class='user-rating-badge'>🎬 " + userRating + "/10</span></div>";
+      }
+    }
+
     var btn = document.createElement("button");
     btn.innerText = "Remove";
     btn.onclick = function() {
@@ -115,6 +125,16 @@ async function renderFavorites() {
     var movie = await res.json();
     var card = createCard(movie);
 
+    // Show user rating if exists
+    var ratings = JSON.parse(localStorage.getItem("ratings") || "{}");
+    var userRating = ratings[id];
+    if (userRating) {
+      var ratingP = card.querySelector("p");
+      if (ratingP) {
+        ratingP.outerHTML = "<div class='rating-row'><span>⭐ " + movie.vote_average.toFixed(1) + "</span><span class='user-rating-badge'>🎬 " + userRating + "/10</span></div>";
+      }
+    }
+
     var btn = document.createElement("button");
     btn.innerText = "Remove";
     btn.onclick = function() {
@@ -125,70 +145,68 @@ async function renderFavorites() {
     container.appendChild(card);
   }
 }
+async function openModal(id) {
+  const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=206e70331573072b79577f43efa23e96`);
+  const movie = await movieRes.json();
 
-function openModal(id) {
-  fetch("https://api.themoviedb.org/3/movie/" + id + "?api_key=206e70331573072b79577f43efa23e96")
-    .then(res => res.json())
-    .then(function(movie) {
-      fetch("https://api.themoviedb.org/3/movie/" + id + "/credits?api_key=206e70331573072b79577f43efa23e96")
-        .then(res => res.json())
-        .then(function(castData) {
-          var castList = "";
+  const creditsRes = await fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=206e70331573072b79577f43efa23e96`);
+  const castData = await creditsRes.json();
 
-          castData.cast.slice(0, 5).forEach(function(actor) {
-            castList += "<li>" + actor.name + "</li>";
-          });
+  const castList = castData.cast.slice(0, 5).map(a => `<li>${a.name}</li>`).join("");
+  const genreText = movie.genres.map(g => g.name).join(", ");
 
-          var genreText = movie.genres.map(function(g){ return g.name; }).join(", ");
+  const modal = document.getElementById("modal");
+  if (!modal) return;
 
-          var modal = document.getElementById("modal");
-          if (!modal) return;
+  modal.innerHTML = `
+    <div class='modal-content'>
+      <h2>${movie.title}</h2>
+      <p><b>Genres:</b> ${genreText}</p>
+      <p>${movie.overview}</p>
+      <h4>Cast:</h4><ul>${castList}</ul>
+    </div>`;
 
-          modal.innerHTML = "<div class='modal-content'>" +
-            "<h2>" + movie.title + "</h2>" +
-            "<p><b>Genres:</b> " + genreText + "</p>" +
-            "<p>" + movie.overview + "</p>" +
-            "<h4>Cast:</h4><ul>" + castList + "</ul></div>";
+  const content = modal.querySelector(".modal-content");
 
-          var content = modal.querySelector(".modal-content");
+  const favBtn = document.createElement("button");
+  favBtn.innerText = "Favorite";
+  favBtn.onclick = () => addFavorites(id);
 
-          var favBtn = document.createElement("button");
-          favBtn.innerText = "Favorite";
-          favBtn.onclick = function(){ addFavorites(id); };
+  const watchBtn = document.createElement("button");
+  watchBtn.innerText = "Watchlist";
+  watchBtn.onclick = () => addWatchlist(id);
 
-          var watchBtn = document.createElement("button");
-          watchBtn.innerText = "Watchlist";
-          watchBtn.onclick = function(){ addWatchlist(id); };
+  var rateBtn = document.createElement("button");
+rateBtn.innerText = "Rate";
+rateBtn.onclick = function(){
+  var rate = prompt("Rate this movie (1-10):");
+  var num = Number(rate);
+  if (!rate) return;
+  if (!Number.isInteger(num) || num < 1 || num > 10) {
+    alert("Please enter a whole number between 1 and 10.");
+    return;
+  }
+  var ratings = JSON.parse(localStorage.getItem("ratings") || "{}");
+  ratings[id] = num;
+  localStorage.setItem("ratings", JSON.stringify(ratings));
+  alert("You rated this movie: " + num);
+};
+  
 
-          var rateBtn = document.createElement("button");
-          rateBtn.innerText = "Rate";
-          rateBtn.onclick = function(){
-            var rate = prompt("Rate this movie 1-10");
-            if(rate){
-              var ratings = JSON.parse(localStorage.getItem("ratings") || "{}");
-              ratings[id] = rate;
-              localStorage.setItem("ratings", JSON.stringify(ratings));
-              alert("You rated this movie: " + rate);
-            }
-          };
+  const closeBtn = document.createElement("button");
+  closeBtn.innerText = "Close";
+  closeBtn.onclick = closeModal;
 
-          var closeBtn = document.createElement("button");
-          closeBtn.innerText = "Close";
-          closeBtn.onclick = function(){ closeModal(); };
+  content.append(favBtn, watchBtn, rateBtn, closeBtn);
 
-          content.appendChild(favBtn);
-          content.appendChild(watchBtn);
-          content.appendChild(rateBtn);
-          content.appendChild(closeBtn);
-
-          modal.classList.remove("hidden");
-        });
-    });
+  modal.classList.remove("hidden");
+  document.body.classList.add("modal-open");
 }
 
 function closeModal(){
   var modal = document.getElementById("modal");
   if(modal) modal.classList.add("hidden");
+  document.body.classList.remove("modal-open");
 }
 
 var modal = document.getElementById("modal");
@@ -206,6 +224,7 @@ searchInput.addEventListener("input", async function() {
   if (!query) {
     dropdown.classList.add("hidden");
     dropdown.innerHTML = "";
+    document.body.classList.remove("dropdown-open");
     return;
   }
 
@@ -217,7 +236,7 @@ searchInput.addEventListener("input", async function() {
 
   var actorMovies = [];
 
-  for (const person of personData.results.slice(0, 2)) {
+  for (const person of personData.results.slice(0, 3)) {
     var creditRes = await fetch("https://api.themoviedb.org/3/person/" + person.id + "/movie_credits?api_key=206e70331573072b79577f43efa23e96");
     var creditData = await creditRes.json();
     creditData.cast.forEach(function(m) {
@@ -247,6 +266,7 @@ searchInput.addEventListener("input", async function() {
     div.addEventListener("click", function() {
       openModal(movie.id);
       dropdown.classList.add("hidden");
+      document.body.classList.remove("dropdown-open");
       searchInput.value = movie.title;
     });
 
@@ -254,11 +274,13 @@ searchInput.addEventListener("input", async function() {
   });
 
   dropdown.classList.remove("hidden");
+  document.body.classList.add("dropdown-open");
 });
 
 document.addEventListener("click", function(e) {
   if (!e.target.closest(".search-container")) {
     dropdown.classList.add("hidden");
+    document.body.classList.remove("dropdown-open");
   }
 });
 

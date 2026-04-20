@@ -14,6 +14,7 @@ header {
   padding: 20px;
   background: #1a1a1a;
 }
+-webki
 
 input {
   padding: 10px;
@@ -34,8 +35,12 @@ section {
 }
 
 .card:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   border-radius: 10px;
+}
+
+body.dropdown-open .card:hover {
+  transform: none;
 }
 
 .card img {
@@ -49,7 +54,7 @@ section {
   display: flex;
   overflow-x: auto;
   gap: 15px;
-  padding: 10px 0;
+  padding: 10px;
   overflow-y: hidden;
 }
 
@@ -151,4 +156,80 @@ button {
 .TMDB img{
   height:auto;
   width:500px;
+}
+
+.rating-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8em;
+  margin-top: 4px;
+  gap: 4px;
+}
+
+.user-rating-badge {
+  color: white;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-weight: bold;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 12px 16px;
+  }
+ 
+  header h1 {
+    font-size: 1.2rem;
+  }
+ 
+  .search-container {
+    width: 95%;
+    margin: 12px auto;
+  }
+ 
+  section {
+    padding: 12px;
+  }
+ 
+  section h2 {
+    font-size: 1rem;
+  }
+ 
+  .card {
+    width: 110px;
+  }
+ 
+  .card img {
+    height: 160px;
+  }
+ 
+  .card h4 {
+    font-size: 0.75rem;
+  }
+ 
+  .card p {
+    font-size: 0.7rem;
+  }
+ 
+  .movie-row {
+    gap: 10px;
+  }
+ 
+  .modal-content {
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    font-size: 0.9rem;
+  }
+ 
+  .TMDB img {
+    width: 180px;
+  }
 }
