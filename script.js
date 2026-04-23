@@ -176,20 +176,76 @@ async function openModal(id) {
   watchBtn.innerText = "Watchlist";
   watchBtn.onclick = () => addWatchlist(id);
 
-  var rateBtn = document.createElement("button");
+// 🔥 Rate button
+const rateBtn = document.createElement("button");
 rateBtn.innerText = "Rate";
-rateBtn.onclick = function(){
-  var rate = prompt("Rate this movie (1-10):");
-  var num = Number(rate);
-  if (!rate) return;
-  if (!Number.isInteger(num) || num < 1 || num > 10) {
-    alert("Please enter a whole number between 1 and 10.");
+
+// 🔥 Popup container (hidden initially via JS)
+const ratePopup = document.createElement("div");
+ratePopup.style.display = "none"; // hide initially
+
+ratePopup.innerHTML = `
+  <div style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #111;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    text-align: center;
+  ">
+    <h4 style="margin-bottom:10px;">Rate this movie</h4>
+    <input type="number" min="1" max="10" step="1" placeholder="1-10"
+      style="width:60px; padding:6px; border-radius:5px; border:none;"
+      class="rateInput"
+    >
+    <br><br>
+    <button class="submitRate">Submit</button>
+    <button class="cancelRate">Cancel</button>
+    <p class="rateError" style="color:red; margin-top:10px;"></p>
+  </div>
+`;
+
+
+document.body.appendChild(ratePopup);
+
+
+rateBtn.onclick = (e) => {
+  e.stopPropagation();
+  ratePopup.style.display = "block";
+};
+
+
+const input = ratePopup.querySelector(".rateInput");
+const submitBtn = ratePopup.querySelector(".submitRate");
+const cancelBtn = ratePopup.querySelector(".cancelRate");
+const errorP = ratePopup.querySelector(".rateError");
+
+submitBtn.onclick = () => {
+  const num = Number(input.value);
+
+  if (!input.value || num < 1 || num > 10 || !Number.isInteger(num)) {
+    errorP.innerText = "Enter a whole number (1–10)";
     return;
   }
-  var ratings = JSON.parse(localStorage.getItem("ratings") || "{}");
+
+  const ratings = JSON.parse(localStorage.getItem("ratings") || "{}");
   ratings[id] = num;
   localStorage.setItem("ratings", JSON.stringify(ratings));
-  alert("You rated this movie: " + num);
+
+  errorP.style.color = "lightgreen";
+  errorP.innerText = "Saved: " + num + "/10";
+
+  input.value = "";
+};
+
+cancelBtn.onclick = () => {
+  ratePopup.style.display = "none";
+  input.value = "";
+  errorP.innerText = "";
+  errorP.style.color = "red";
 };
   
 
