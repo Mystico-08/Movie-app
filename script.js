@@ -176,13 +176,13 @@ async function openModal(id) {
   watchBtn.innerText = "Watchlist";
   watchBtn.onclick = () => addWatchlist(id);
 
-// 🔥 Rate button
+
 const rateBtn = document.createElement("button");
 rateBtn.innerText = "Rate";
 
-// 🔥 Popup container (hidden initially via JS)
+
 const ratePopup = document.createElement("div");
-ratePopup.style.display = "none"; // hide initially
+ratePopup.style.display = "none"; 
 
 ratePopup.innerHTML = `
   <div style="
